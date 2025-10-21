@@ -70,34 +70,30 @@
   </div>
 
 <script>
-/* ---------- gate ---------- */
-if (sessionStorage.getItem('adminAuth') !== 'true') location.href = 'Login.html';
+/* ---------- gate (CASE-SENSITIVE) ---------- */
+if (sessionStorage.getItem('adminAuth') !== 'true') {
+  location.href = 'Login.html';          //  ✅  capital L + capital A file name
+}
 
 /* ---------- stats helper ---------- */
 const Stats = (() => {
   const key = 'tfStats_v1';
   let raw = JSON.parse(localStorage.getItem(key) || '{}');
-
-  /* initialise structure */
   if (!raw.visits) raw = { visits: 0, users: {}, devices: {}, referrers: {}, durations: [], lastReset: Date.now() };
   const save = () => localStorage.setItem(key, JSON.stringify(raw));
 
-  /* count this page-load */
   const id = localStorage.getItem('tfUserID') || crypto.randomUUID();
   localStorage.setItem('tfUserID', id);
   raw.visits++;
   raw.users[id] = Date.now();
 
-  /* device type */
   const dev = /Mobile|Android/i.test(navigator.userAgent) ? 'Mobile' : /Tablet|iPad/i.test(navigator.userAgent) ? 'Tablet' : 'Desktop';
   raw.devices[dev] = (raw.devices[dev] || 0) + 1;
 
-  /* referrer */
   const ref = document.referrer || 'Direct';
   raw.referrers[ref] = (raw.referrers[ref] || 0) + 1;
   save();
 
-  /* export getters */
   return {
     totalVisits: () => raw.visits,
     uniqueVisits: () => Object.keys(raw.users).length,
@@ -105,6 +101,44 @@ const Stats = (() => {
     referrers: () => Object.entries(raw.referrers).sort((a, b) => b[1] - a[1]).slice(0, 5),
     reset: () => { localStorage.removeItem(key); location.reload(); }
   };
+})();
+
+/* ---------- fill numbers ---------- */
+document.getElementById('totalVisits').textContent = Stats.totalVisits();
+document.getElementById('uniqueVisits').textContent = Stats.uniqueVisits();
+document.getElementById('avgDuration').textContent = '—';
+document.getElementById('bounceRate').textContent = '—';
+
+/* ---------- device chart ---------- */
+const ctx = document.getElementById('deviceChart');
+const devData = Stats.devices();
+new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: Object.keys(devData),
+    datasets: [{ data: Object.values(devData), backgroundColor: ['#00F7FF', '#FFD700', '#FF2D2D'] }]
+  },
+  options: { plugins: { legend: { position: 'bottom', labels: { color: '#F5F5F5' } } } }
+});
+
+/* ---------- referrers list ---------- */
+const refUL = document.getElementById('refList');
+refUL.innerHTML = Stats.referrers().map(([url, cnt]) => `<li>${url} — <strong>${cnt}</strong></li>`).join('') || '<li>Direct only</li>';
+
+/* ---------- buttons ---------- */
+document.getElementById('clearStats').onclick = () => { if (confirm('Reset all stored stats?')) Stats.reset(); };
+document.getElementById('saveBan').onclick = () => { localStorage.setItem('tfBanList', document.getElementById('banList').value); alert('Saved'); };
+document.getElementById('banList').value = localStorage.getItem('tfBanList') || '';
+
+/* ---------- logout ---------- */
+document.getElementById('logoutBtn').onclick = e => {
+  e.preventDefault();
+  sessionStorage.removeItem('adminAuth');
+  location.href = 'Login.html';   //  ✅  capital L
+};
+</script>
+</body>
+</html>
 })();
 
 /* ---------- fill numbers ---------- */
