@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Apps | The Sunken Fate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #FF2D2D; --secondary: #FF5E14; --dark: #1A1A1A;
+      --light: #F5F5F5; --accent: #FFD700; --neon: #00F7FF;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Rajdhani','Orbitron',sans-serif}
+    body{background:var(--dark);color:var(--light);background-image:radial-gradient(circle at 25% 25%,rgba(255,45,45,.15) 0%,transparent 50%),radial-gradient(circle at 75% 75%,rgba(0,247,255,.15) 0%,transparent 50%)}
+    header{background:linear-gradient(135deg,var(--primary),var(--secondary));padding:2rem 1rem;text-align:center;position:relative;box-shadow:0 0 30px rgba(255,45,45,.5);border-bottom:3px solid var(--accent)}
+    header::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,transparent,var(--neon),var(--accent),var(--primary),transparent);animation:flame 2s infinite}
+    @keyframes flame{0%,100%{opacity:.7}50%{opacity:1}}
+    h1{font-size:2.8rem;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 10px var(--accent)}
+    .tagline{letter-spacing:1px;text-shadow:0 0 5px var(--neon)}
+    nav{display:flex;justify-content:center;gap:1.2rem;background:rgba(26,26,26,.9);padding:1rem;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);border-bottom:1px solid var(--neon)}
+    nav a{color:var(--light);text-decoration:none;font-weight:700;padding:.5rem 1rem;border-radius:30px;transition:all .3s ease}
+    nav a:hover{color:var(--accent);text-shadow:0 0 10px var(--accent)}
+    .container{max-width:1400px;margin:2rem auto;padding:0 1.5rem}
+    .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2rem}
+    .app-card{background:rgba(30,30,30,.8);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;transition:all .3s ease;box-shadow:0 5px 15px rgba(0,0,0,.3);cursor:pointer}
+    .app-card:hover{transform:translateY(-8px);border-color:var(--neon);box-shadow:0 15px 30px rgba(255,45,45,.3),0 0 20px rgba(0,247,255,.2)}
+    .app-thumb{height:180px;background-size:cover;background-position:center;position:relative}
+    .app-thumb::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(to bottom,transparent 60%,rgba(0,0,0,.8))}
+    .app-info{padding:1.5rem}
+    .app-title{font-size:1.2rem;margin-bottom:.5rem;color:var(--light)}
+    .app-desc{font-size:.85rem;color:#aaa;margin-bottom:1rem}
+    .open-btn{display:block;width:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;border:none;padding:.7rem;border-radius:4px;font-weight:700;letter-spacing:1px;transition:all .3s ease}
+    .open-btn:hover{box-shadow:0 0 15px var(--primary)}
+    .iframe-modal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:1000;display:none;flex-direction:column}
+    .iframe-head{display:flex;justify-content:space-between;align-items:center;padding:1rem;background:rgba(26,26,26,.9);border-bottom:1px solid var(--neon)}
+    .iframe-title{color:var(--neon);font-family:'Orbitron',sans-serif;letter-spacing:1px}
+    .close-iframe{background:var(--primary);color:#fff;border:none;padding:.5rem 1rem;border-radius:30px;font-weight:700;cursor:pointer}
+    .iframe-box{flex:1;padding:1rem;display:flex;justify-content:center;align-items:center}
+    .iframe-box iframe{width:90%;height:80%;border:2px solid var(--neon);border-radius:10px;background:#000}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Web Apps</h1>
+  <p class="tagline">No install • No blocks • Just works</p>
+</header>
+
+<nav>
+  <a href="index.html"><i class="fas fa-home"></i> Home</a>
+  <a href="#calc">Calculator</a>
+  <a href="#draw">Drawing</a>
+  <a href="#timer">Timer</a>
+  <a href="#convert">Converter</a>
+  <a href="#notes">Notes</a>
+</nav>
+
+<div class="container">
+  <div class="app-grid">
+
+    <!-- 1. Calculator -->
+    <div class="app-card" onclick="openApp('Desmos Calculator','https://www.desmos.com/scientific')">
+      <div class="app-thumb" style="background-image:url(https://www.desmos.com/img/logo-white.png)"></div>
+      <div class="app-info">
+        <div class="app-title">Scientific Calculator</div>
+        <div class="app-desc">Full-featured, keyboard-friendly, works offline once loaded.</div>
+        <button class="open-btn">Launch</button>
+      </div>
+    </div>
+
+    <!-- 2. Drawing / Sketch -->
+    <div class="app-card" onclick="openApp('Aggie.io','https://aggie.io')">
+      <div class="app-thumb" style="background-image:url(https://aggie.io/favicon.ico)"></div>
+      <div class="app-info">
+        <div class="app-title">Multi-user Drawing</div>
+        <div class="app-desc">Photoshop-like tools, no account needed, export PNG/SVG.</div>
+        <button class="open-btn">Launch</button>
+      </div>
+    </div>
+
+    <!-- 3. Stopwatch / Timer -->
+    <div class="app-card" onclick="openApp('Timer-Tab','https://timer-tab.com')">
+      <div class="app-thumb" style="background:#111 url(https://timer-tab.com/apple-touch-icon.png) center/cover no-repeat"></div>
+      <div class="app-info">
+        <div class="app-title">Stopwatch & Timer</div>
+        <div class="app-desc">Clean full-screen timer with sound alerts.</div>
+        <button class="open-btn">Launch</button>
+      </div>
+    </div>
+
+    <!-- 4. Unit Converter -->
+    <div class="app-card" onclick="openApp('Unit-Converter','https://www.unitconverters.net')">
+      <div class="app-thumb" style="background-image:url(https://www.unitconverters.net/favicon.ico)"></div>
+      <div class="app-info">
+        <div class="app-title">Unit Converter</div>
+        <div class="app-desc">Length, mass, temp, speed, volume, etc. Instant results.</div>
+        <button class="open-btn">Launch</button>
+      </div>
+    </div>
+
+    <!-- 5. Quick Notes -->
+    <div class="app-card" onclick="openApp('Notepad','https://notepad.js.org')">
+      <div class="app-thumb" style="background:#111 url(https://notepad.js.org/icon.png) center/cover no-repeat"></div>
+      <div class="app-info">
+        <div class="app-title">Markdown Notepad</div>
+        <div class="app-desc">Auto-saves to browser storage, export as .md or PDF.</div>
+        <button class="open-btn">Launch</button>
+      </div>
+    </div>
+
+    <!-- 6. Voice Recorder -->
+    <div class="app-card" onclick="openApp('Vocaroo','https://vocaroo.com')">
+      <div class="app-thumb" style="background-image:url(https://vocaroo.com/favicon.ico)"></div>
+      <div class="app-info">
+        <div class="app-title">Voice Recorder</div>
+        <div class="app-desc">One-click record & share links—no sign-up.</div>
+        <button class="open-btn">Launch</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- universal iframe modal -->
+<div class="iframe-modal" id="iframeModal">
+  <div class="iframe-head">
+    <span class="iframe-title" id="iframeTitle">App</span>
+    <button class="close-iframe" onclick="closeApp()">Close</button>
+  </div>
+  <div class="iframe-box">
+    <iframe id="appFrame" allow="camera;microphone"></iframe>
+  </div>
+</div>
+
+<script>
+function openApp(name, url){
+  document.getElementById('iframeTitle').textContent = name;
+  document.getElementById('appFrame').src = url;
+  document.getElementById('iframeModal').style.display = 'flex';
+}
+function closeApp(){
+  document.getElementById('appFrame').src = '';
+  document.getElementById('iframeModal').style.display = 'none';
+}
+// ESC key close
+addEventListener('keydown', e => { if(e.key === 'Escape') closeApp(); });
+</script>
+</body>
+</html>
