@@ -18,27 +18,21 @@
     .card h2{color:var(--accent);margin-bottom:.8rem}
     .btn{display:inline-block;background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;padding:.6rem 1.2rem;border-radius:4px;text-decoration:none;font-weight:700;transition:all .3s ease;margin:.2rem}
     .btn:hover{box-shadow:0 0 15px var(--primary)}
-    .logout{position:absolute;top:1.5rem;right:1.5rem}
-    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem}
-    .stat-box{background:rgba(0,247,255,.1);border:1px solid var(--neon);border-radius:6px;padding:1rem;text-align:center}
-    .stat-box .num{font-size:1.8rem;color:var(--accent)}
-    .stat-box .lbl{font-size:.75rem;color:#aaa}
     textarea{width:100%;min-height:100px;background:rgba(0,0,0,.3);border:1px solid var(--neon);border-radius:4px;color:var(--light);padding:.5rem;resize:vertical}
   </style>
 </head>
 <body>
 
-  <a class="btn logout" id="logoutBtn" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
   <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
 
   <!-------  VISITS & USERS  ------->
   <div class="card">
     <h2>Traffic Overview</h2>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="num" id="totalVisits">0</div><div class="lbl">Total Visits</div></div>
-      <div class="stat-box"><div class="num" id="uniqueVisits">0</div><div class="lbl">Unique Users</div></div>
-      <div class="stat-box"><div class="num" id="avgDuration">0</div><div class="lbl">Avg Duration (s)</div></div>
-      <div class="stat-box"><div class="num" id="bounceRate">0</div><div class="lbl">Bounce Rate %</div></div>
+    <div class="stat-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem">
+      <div class="stat-box" style="background:rgba(0,247,255,.1);border:1px solid var(--neon);border-radius:6px;padding:1rem;text-align:center"><div class="num" id="totalVisits">0</div><div class="lbl">Total Visits</div></div>
+      <div class="stat-box" style="background:rgba(0,247,255,.1);border:1px solid var(--neon);border-radius:6px;padding:1rem;text-align:center"><div class="num" id="uniqueVisits">0</div><div class="lbl">Unique Users</div></div>
+      <div class="stat-box" style="background:rgba(0,247,255,.1);border:1px solid var(--neon);border-radius:6px;padding:1rem;text-align:center"><div class="num" id="avgDuration">0</div><div class="lbl">Avg Duration (s)</div></div>
+      <div class="stat-box" style="background:rgba(0,247,255,.1);border:1px solid var(--neon);border-radius:6px;padding:1rem;text-align:center"><div class="num" id="bounceRate">0</div><div class="lbl">Bounce Rate %</div></div>
     </div>
   </div>
 
@@ -70,11 +64,6 @@
   </div>
 
 <script>
-/* ---------- gate (CASE-SENSITIVE) ---------- */
-if (sessionStorage.getItem('adminAuth') !== 'true') {
-  location.href = 'Login.html';          //  ✅  capital L + capital A file name
-}
-
 /* ---------- stats helper ---------- */
 const Stats = (() => {
   const key = 'tfStats_v1';
@@ -105,6 +94,33 @@ const Stats = (() => {
 
 /* ---------- fill numbers ---------- */
 document.getElementById('totalVisits').textContent = Stats.totalVisits();
+document.getElementById('uniqueVisits').textContent = Stats.uniqueVisits();
+document.getElementById('avgDuration').textContent = '—';
+document.getElementById('bounceRate').textContent = '—';
+
+/* ---------- device chart ---------- */
+const ctx = document.getElementById('deviceChart');
+const devData = Stats.devices();
+new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: Object.keys(devData),
+    datasets: [{ data: Object.values(devData), backgroundColor: ['#00F7FF', '#FFD700', '#FF2D2D'] }]
+  },
+  options: { plugins: { legend: { position: 'bottom', labels: { color: '#F5F5F5' } } } }
+});
+
+/* ---------- referrers list ---------- */
+const refUL = document.getElementById('refList');
+refUL.innerHTML = Stats.referrers().map(([url, cnt]) => `<li>${url} — <strong>${cnt}</strong></li>`).join('') || '<li>Direct only</li>';
+
+/* ---------- buttons ---------- */
+document.getElementById('clearStats').onclick = () => { if (confirm('Reset all stored stats?')) Stats.reset(); };
+document.getElementById('saveBan').onclick = () => { localStorage.setItem('tfBanList', document.getElementById('banList').value); alert('Saved'); };
+document.getElementById('banList').value = localStorage.getItem('tfBanList') || '';
+</script>
+</body>
+</html>
 document.getElementById('uniqueVisits').textContent = Stats.uniqueVisits();
 document.getElementById('avgDuration').textContent = '—';
 document.getElementById('bounceRate').textContent = '—';
